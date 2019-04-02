@@ -3,10 +3,23 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:TicTacToe"
+        xmlns:control="clr-namespace:TicTacToe.Source.Control"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
-    <Grid>
-        
+        Icon="{Binding IconImage}"
+        WindowStartupLocation="CenterScreen"
+        Title="Tic-Tac-Toe (NETWORK TESTING WITH CLETUS)"
+        Height="640" Width="512"
+        MinHeight="640" MinWidth="512">
+
+    <Grid Background="DarkSlateGray">
+        <Grid.Resources>
+            <Style TargetType="Frame">
+                <Setter Property="NavigationUIVisibility" Value="Hidden" />
+            </Style>
+        </Grid.Resources>
+
+        <Border Background="DarkSlateGray" BorderBrush="CornflowerBlue" BorderThickness="1" Margin="2">
+            <Frame control:DisableNavigation.Disable="True" Source="{Binding CurrentModule}" />
+        </Border>
     </Grid>
 </Window>
