@@ -10,7 +10,7 @@ namespace TicTacToe.Source.ViewModel {
             IconImage = "../Resources/icons/icon_main.png";
             CurrentModule = "Source/Modules/Menu.xaml";
 
-            var simpleMessenger = CrossViewMessenger.Instance;
+            CrossViewMessenger simpleMessenger = CrossViewMessenger.Instance;
             simpleMessenger.MessageValueChanged += OnSimpleMessengerValueChanged;
         }
 

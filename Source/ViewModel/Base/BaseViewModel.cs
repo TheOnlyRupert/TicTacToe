@@ -10,7 +10,7 @@ namespace TicTacToe.Source.ViewModel.Base {
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected void RaisePropertyChangedEvent(string propertyName) {
-            var handler = PropertyChanged;
+            PropertyChangedEventHandler handler = PropertyChanged;
             handler?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }

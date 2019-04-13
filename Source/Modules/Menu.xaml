@@ -21,7 +21,7 @@
             <Button Content="Join Server" FontSize="32" Command="{Binding ButtonCommand}" Padding="5"
                     CommandParameter="client" />
             <Button Content="Start Server" FontSize="32" Command="{Binding ButtonCommand}" Padding="5"
-                    CommandParameter="server" />
+                    CommandParameter="server" IsEnabled="False" />
             <Grid Margin="0 10">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="2*" />

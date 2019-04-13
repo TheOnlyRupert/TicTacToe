@@ -52,6 +52,7 @@
         </ApplicationDefinition>
         <Compile Include="MainWindow.xaml.cs"/>
         <Compile Include="Source\Control\DisableNavigation.cs"/>
+        <Compile Include="Source\HIDDEN.cs"/>
         <Compile Include="Source\Modules\Game.xaml.cs">
             <DependentUpon>Game.xaml</DependentUpon>
         </Compile>

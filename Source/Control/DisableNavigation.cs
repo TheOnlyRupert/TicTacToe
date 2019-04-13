@@ -5,7 +5,8 @@ using System.Windows.Navigation;
 namespace TicTacToe.Source.Control {
     public static class DisableNavigation {
         public static readonly DependencyProperty DisableProperty = DependencyProperty.RegisterAttached(
-            "Disable", typeof(bool), typeof(DisableNavigation), new PropertyMetadata(false, DisableChanged));
+            "Disable", typeof(bool), typeof(DisableNavigation), new PropertyMetadata(false, DisableChanged)
+        );
 
         public static bool GetDisable(DependencyObject o) {
             return (bool) o.GetValue(DisableProperty);
@@ -16,7 +17,7 @@ namespace TicTacToe.Source.Control {
         }
 
         public static void DisableChanged(object sender, DependencyPropertyChangedEventArgs e) {
-            var frame = (Frame) sender;
+            Frame frame = (Frame) sender;
             frame.Navigated += DontNavigate;
             frame.NavigationUIVisibility = NavigationUIVisibility.Hidden;
         }

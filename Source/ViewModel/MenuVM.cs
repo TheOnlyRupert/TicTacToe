@@ -1,8 +1,6 @@
 using System;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
-using System.Threading;
 using System.Windows.Input;
 using TicTacToe.Source.Reference;
 using TicTacToe.Source.ViewModel.Base;
@@ -11,23 +9,17 @@ namespace TicTacToe.Source.ViewModel {
     public class MenuVM : BaseViewModel {
         private readonly CrossViewMessenger _crossViewMessenger;
 
-        private string _inputIp,
-            _publicIp,
-            _localIp,
-            _clientName,
-            _displayConnection,
-            _inputPort;
-
-        private bool isServerRunning, isTryingToConnect;
+        private string _inputIp, _publicIp, _localIp, _clientName, _displayConnection, _inputPort, _username;
 
         public MenuVM() {
             ClientName = Dns.GetHostName() + '_' + Environment.UserName;
+            Username = "";
             LocalIp = GetLocalIPAddress();
             PublicIp = new WebClient().DownloadString("http://ipv4.icanhazip.com/");
             PublicIp = PublicIp.Remove(PublicIp.Length - 1);
 
-            DisplayConnection = "Not Connected";
-            InputPort = "9999";
+            InputPort = "10000";
+            InputIp = HIDDEN.PublicIP;
 
             _crossViewMessenger = CrossViewMessenger.Instance;
         }
@@ -81,112 +73,44 @@ namespace TicTacToe.Source.ViewModel {
             }
         }
 
+        public string Username {
+            get => _username;
+            set {
+                _username = value;
+                RaisePropertyChangedEvent("Username");
+            }
+        }
+
         public ICommand ButtonCommand => new DelegateCommand(ButtonCommandLogic, true);
 
         private static string GetLocalIPAddress() {
-            var host = Dns.GetHostEntry(Dns.GetHostName());
-            foreach (var ip in host.AddressList)
-                if (ip.AddressFamily == AddressFamily.InterNetwork)
+            IPHostEntry host = Dns.GetHostEntry(Dns.GetHostName());
+            foreach (IPAddress ip in host.AddressList) {
+                if (ip.AddressFamily == AddressFamily.InterNetwork) {
                     return ip.ToString();
-            throw new Exception("[ERROR] No network adapters with an IPv4 address in the system");
+                }
+            }
+
+            return null;
         }
 
         private void ButtonCommandLogic(object obj) {
             switch (obj) {
-                case "client":
-                    if (!isTryingToConnect) {
-                        isTryingToConnect = true;
-                        DisplayConnection = "Connecting...";
-                        Client();
+            case "client":
+                if (Username.Length > 2) {
+                    try {
+                        ReferenceValues.TCP_CLIENT = new TcpClient(PublicIp, int.Parse(InputPort));
+                        ReferenceValues.NETWORK_STREAM = ReferenceValues.TCP_CLIENT.GetStream();
 
                         ReferenceValues.CurrentModule = "Source/Modules/Game.xaml";
                         _crossViewMessenger.PushMessage("SwitchCurrentModule", null);
-                    } else {
-                        Console.WriteLine("[CHILL] Client is trying to connect");
-                    }
-
-                    break;
-
-                case "server":
-                    if (!isServerRunning)
-                        Server();
-                    else
-                        Console.WriteLine("[CHILL] Server is already running");
-
-                    break;
-            }
-        }
-
-        private void Client() {
-            new Thread(() => {
-                Thread.CurrentThread.IsBackground = true;
-                try {
-                    var client = new TcpClient(InputIp, int.Parse(InputPort));
-                    var sendData = Encoding.ASCII.GetBytes("test;");
-                    var stream = client.GetStream();
-
-                    stream.Write(sendData, 0, sendData.Length);
-                    DisplayConnection = "Connected";
-
-                    stream.Close();
-                    client.Close();
-                } catch (Exception e) {
-                    DisplayConnection = "Not Connected";
-                    isTryingToConnect = false;
-
-                    if (e is SocketException)
-                        Console.WriteLine(@"[ERROR] Connection refused on port " + InputPort +
-                                          "\n    Server may not be running or port not forwarded");
-                    else if (e is ArgumentNullException || e is FormatException)
-                        Console.WriteLine("[ERROR] IP Address must be correct format");
-                    else
-                        Console.WriteLine(e);
-                }
-            }).Start();
-        }
-
-        private void Server() {
-            /* If user is starting server, they're probably going to want to connect to it */
-            InputIp = GetLocalIPAddress();
-
-            new Thread(() => {
-                Thread.CurrentThread.IsBackground = true;
-
-                try {
-                    var ipHost = Dns.GetHostEntry(Dns.GetHostName()).AddressList[0];
-                    var server = new TcpListener(ipHost, int.Parse(InputPort));
-
-                    try {
-                        server.Start();
-                        isServerRunning = true;
-                        Console.WriteLine(@"[INFO] Server did start");
                     } catch (Exception) {
-                        Console.WriteLine(@"[ERROR] Server cannot start");
-                        return;
+                        //nothing
                     }
-
-                    while (true) {
-                        var client = server.AcceptTcpClient();
-                        var receivingBuffer = new byte[64];
-                        var stream = client.GetStream();
-
-                        stream.Read(receivingBuffer, 0, receivingBuffer.Length);
-                        var message = new StringBuilder();
-                        foreach (var b in receivingBuffer) {
-                            if (b.Equals(59)) break;
-
-                            message.Append(Convert.ToChar(b).ToString());
-                        }
-
-                        Console.WriteLine(message);
-                    }
-                } catch (Exception e) {
-                    if (e is FormatException)
-                        Console.WriteLine("[ERROR] Port must be in correct format!");
-                    else
-                        Console.WriteLine(e);
                 }
-            }).Start();
+
+                break;
+            }
         }
     }
 }
