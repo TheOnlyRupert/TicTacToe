@@ -52,7 +52,6 @@
         </ApplicationDefinition>
         <Compile Include="MainWindow.xaml.cs"/>
         <Compile Include="Source\Control\DisableNavigation.cs"/>
-        <Compile Include="Source\HIDDEN.cs"/>
         <Compile Include="Source\Modules\Game.xaml.cs">
             <DependentUpon>Game.xaml</DependentUpon>
         </Compile>
@@ -60,6 +59,7 @@
             <DependentUpon>Menu.xaml</DependentUpon>
         </Compile>
         <Compile Include="Source\Reference\ReferenceValues.cs"/>
+        <Compile Include="Source\Server.cs"/>
         <Compile Include="Source\ViewModel\Base\BaseViewModel.cs"/>
         <Compile Include="Source\ViewModel\Base\CrossViewMessenger.cs"/>
         <Compile Include="Source\ViewModel\Base\DelegateCommand.cs"/>

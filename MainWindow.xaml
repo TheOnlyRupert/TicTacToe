@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Icon="{Binding IconImage}"
         WindowStartupLocation="CenterScreen"
-        Title="Tic-Tac-Toe (NETWORK TESTING WITH CLETUS)"
+        Title="Tic-Tac-Toe"
         Height="640" Width="512"
         MinHeight="640" MinWidth="512">
 
